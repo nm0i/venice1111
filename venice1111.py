@@ -9,9 +9,10 @@ load_dotenv()
 
 app = FastAPI()
 
+VENICE_KEY = os.getenv("VENICE_KEY")
+
 VENICE_BASEURI = "https://api.venice.ai/"
 VENICE_DEFAULT_MODEL = "fluently-xl"
-VENICE_KEY = os.getenv("VENICE_KEY")
 VENICE_PROMPT_CUTOUT = 1024
 
 
@@ -26,9 +27,9 @@ class VeniceOptions(BaseModel):
 class VeniceT2IParams(BaseModel):
     prompt: str
     negative_prompt: str = ""
-    steps: int = 25
-    cfg_scale: int = 7
-    seed: int = 0
+    steps: int = 30
+    cfg_scale: float = 7.0
+    seed: int = -1
     width: int = 1024
     height: int = 1024
 
@@ -115,7 +116,7 @@ async def serve_t2i(params: VeniceT2IParams):
     }
 
     headers = {
-        "Authorization": "Bearer " + os.getenv("VENICE_KEY"),
+        "Authorization": "Bearer " + VENICE_KEY,
         "Content-Type": "application/json",
     }
 
