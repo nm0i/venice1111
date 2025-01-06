@@ -2,7 +2,7 @@
 
 FastAPI proxy for [Venice.AI](https://venice.ai/) image generation API that presents itself as [AUTOMATIC1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui) endpoint.
 
-This proxy should allow image generation via compatible API tools, such as StableUI, SillyTavern, KoboldAI.
+This proxy should allow image generation via compatible API tools.
 
 ## Installing
 

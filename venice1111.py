@@ -20,7 +20,7 @@ class VeniceOptions(BaseModel):
     samples_format: str = "png"
 
     class Config:
-        extra = Extra.allow
+        extra = Extra.ignore
 
 
 class VeniceT2IParams(BaseModel):
@@ -59,7 +59,6 @@ async def read_models():
                 "model_name": i["id"],
                 "hash": "8888888888",
                 "sha256": "8888888888888888888888888888888888888888888888888888888888888888",
-                "filename": "bloop",
                 "config": None,
             }
             model_list.append(model)
@@ -85,9 +84,9 @@ async def read_options():
 async def read_samplers():
     return [
         {
-            "name": "default",
+            "name": "Euler",
             "aliases": [
-                "default",
+                "euler",
             ],
             "options": {},
         },
