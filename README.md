@@ -15,7 +15,7 @@ This proxy should allow image generation via compatible API tools.
 ## Running
 
     . ./venv/bin/activate
-    VENICE_KEY=<your_api_key> uvicorn venice1111:app --host 127.0.0.1 --port 9900 --reload
+    VENICE_KEY=<your_api_key> uvicorn venice1111:app --host 127.0.0.1 --port 9900
 
 Then connect your app to http://127.0.0.1:9900.
 
