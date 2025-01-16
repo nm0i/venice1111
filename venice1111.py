@@ -134,8 +134,6 @@ async def serve_t2i(params: VeniceT2IParams):
     if params.height > VENICE_IMAGE_XY_CUTOUT:
         params.height = VENICE_IMAGE_XY_CUTOUT
 
-    print(params)
-
     payload = {
         "model": venice_options.sd_model_checkpoint,
         "prompt": params.prompt[:VENICE_PROMPT_CUTOUT],
