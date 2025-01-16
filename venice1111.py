@@ -14,6 +14,7 @@ VENICE_KEY = os.getenv("VENICE_KEY")
 VENICE_BASEURI = "https://api.venice.ai/"
 VENICE_DEFAULT_MODEL = "fluently-xl"
 VENICE_PROMPT_CUTOUT = 1024
+VENICE_IMAGE_XY_CUTOUT = 1280
 
 
 class VeniceOptions(BaseModel):
@@ -32,6 +33,7 @@ class VeniceT2IParams(BaseModel):
     seed: int = -1
     width: int = 1024
     height: int = 1024
+    override_settings: dict
 
     class Config:
         extra = Extra.ignore
@@ -70,17 +72,6 @@ async def read_models():
         )
 
 
-@app.post("/sdapi/v1/options")
-async def write_options(params: VeniceOptions):
-    venice_options.sd_model_checkpoint = params.sd_model_checkpoint
-    return venice_options.dict()
-
-
-@app.get("/sdapi/v1/options")
-async def read_options():
-    return venice_options.dict()
-
-
 @app.get("/sdapi/v1/samplers")
 async def read_samplers():
     return [
@@ -94,6 +85,40 @@ async def read_samplers():
     ]
 
 
+@app.get("/sdapi/v1/sd-vae")
+async def read_vae():
+
+    url = f"{VENICE_BASEURI}api/v1/image/styles"
+
+    headers = {"Authorization": f"Bearer {VENICE_KEY}"}
+
+    response = requests.request("GET", url, headers=headers)
+
+    if response.status_code == 200:
+        styles_list = []
+        for i in response.json()["data"]:
+            style = {
+                "model_name": i,
+            }
+            styles_list.append(style)
+        return styles_list
+    else:
+        raise HTTPException(
+            status_code=400, detail="Error accessing venice api."
+        )
+
+
+@app.post("/sdapi/v1/options")
+async def write_options(params: VeniceOptions):
+    venice_options.sd_model_checkpoint = params.sd_model_checkpoint
+    return venice_options.dict()
+
+
+@app.get("/sdapi/v1/options")
+async def read_options():
+    return venice_options.dict()
+
+
 @app.get("/sdapi/v1/progress")
 async def read_progess():
     return {"progress": 0.0, "state": {"job_count": 0}}
@@ -103,6 +128,13 @@ async def read_progess():
 async def serve_t2i(params: VeniceT2IParams):
 
     url = f"{VENICE_BASEURI}api/v1/image/generate"
+
+    if params.width > VENICE_IMAGE_XY_CUTOUT:
+        params.width = VENICE_IMAGE_XY_CUTOUT
+    if params.height > VENICE_IMAGE_XY_CUTOUT:
+        params.height = VENICE_IMAGE_XY_CUTOUT
+
+    print(params)
 
     payload = {
         "model": venice_options.sd_model_checkpoint,
@@ -114,6 +146,9 @@ async def serve_t2i(params: VeniceT2IParams):
         "hide_watermark": True,
         "return_binary": False,
     }
+
+    if params.override_settings and params.override_settings["sd_vae"]:
+        payload["style_preset"] = params.override_settings["sd_vae"]
 
     headers = {
         "Authorization": "Bearer " + VENICE_KEY,
@@ -129,6 +164,7 @@ async def serve_t2i(params: VeniceT2IParams):
             "info": "",
         }
     else:
+        print
         raise HTTPException(
             status_code=400,
             detail=f"Error accessing venice api: {response.text}.",
