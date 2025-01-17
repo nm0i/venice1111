@@ -6,7 +6,7 @@ import requests
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, ConfigDict
 
 load_dotenv()
 
@@ -21,14 +21,17 @@ VENICE_IMAGE_XY_CUTOUT = 1280
 
 
 class VeniceOptions(BaseModel):
+
+    model_config = ConfigDict(extra="ignore")
+
     sd_model_checkpoint: str = VENICE_DEFAULT_MODEL
     samples_format: str = "png"
 
-    class Config:
-        extra = Extra.ignore
-
 
 class VeniceT2IParams(BaseModel):
+
+    model_config = ConfigDict(extra="ignore")
+
     prompt: str
     negative_prompt: str = ""
     steps: int = 30
@@ -37,9 +40,6 @@ class VeniceT2IParams(BaseModel):
     width: int = 1024
     height: int = 1024
     override_settings: dict
-
-    class Config:
-        extra = Extra.ignore
 
 
 venice_options = VeniceOptions()
@@ -173,4 +173,4 @@ async def serve_t2i(params: VeniceT2IParams):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=9900, log_level="info")
+    uvicorn.run("main:app", host="127.0.0.1", port=9900, log_level="debug")
