@@ -11,11 +11,14 @@ This proxy should allow image generation via compatible API tools.
     python3 -m venv venv
     . ./venv/bin/activate
     pip install -r requirements.txt
+    exit
 
 ## Running
 
     . ./venv/bin/activate
-    VENICE_KEY=<your_api_key> uvicorn venice1111:app --host 127.0.0.1 --port 9900
+    VENICE_KEY=<your_api_key> ./main.py
+
+Alternatively, you can save your key in `.env` file in the directory as `VENICE_KEY=<your_api_key>`
 
 Then connect your app to http://127.0.0.1:9900.
 

@@ -1,6 +1,9 @@
+#!/bin/env python3
+
 import os
 
 import requests
+import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Extra
@@ -167,3 +170,7 @@ async def serve_t2i(params: VeniceT2IParams):
             status_code=400,
             detail=f"Error accessing venice api: {response.text}.",
         )
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=9900, log_level="info")
