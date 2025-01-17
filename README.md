@@ -18,7 +18,7 @@ This proxy should allow image generation via compatible API tools.
     . ./venv/bin/activate
     VENICE_KEY=<your_api_key> ./main.py
 
-Alternatively, you can save your key in `.env` file in the directory as `VENICE_KEY=<your_api_key>`
+Alternatively, you can save your key in `.env` file as `VENICE_KEY=<your_api_key>`
 
 Then connect your app to http://127.0.0.1:9900.
 
