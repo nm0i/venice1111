@@ -48,7 +48,7 @@ venice_options = VeniceOptions()
 @app.get("/sdapi/v1/sd-models")
 async def read_models():
 
-    url = f"{VENICE_BASEURI}api/v1/models"
+    url = f"{VENICE_BASEURI}api/v1/models?type=image"
 
     headers = {"Authorization": f"Bearer {VENICE_KEY}"}
 
